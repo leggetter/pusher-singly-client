@@ -35,9 +35,9 @@
 		  	var pusher = new Pusher( '94a30c48931d62ed5ebf', { encrypted: true } );
 		  	var singly = new PusherSingly( pusher );
 		  	var channel = singly.subscribe( {
+		  		//webhook: 'http://4xjj.localtunnel.com', // TODO: not required when the server knows the streaming webhook endpoint
 		  		path: '/services/twitter/self',
-		  		token: accessToken,
-		  		webhook: 'http://529e.localtunnel.com' // TODO: not required when the server knows the streaming webhook endpoint
+		  		token: accessToken
 		  	} );
 		  	channel.bind( 'update', function( data ) {
 		  		var el = document.createElement( 'pre' );

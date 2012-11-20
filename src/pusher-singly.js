@@ -11,6 +11,9 @@
 	    throw '"options.path" must be supplied';
 	  }
 	  options.query = options.query || '';
+
+	  // for now, make each channel unique. See TODOs in leggetter/hallway
+	  options._timestamp = ( new Date() ).getTime();
 	  
 	  var encodedChannel = JSON.stringify( options );
 	  encodedChannel = Base64.encode( encodedChannel );
