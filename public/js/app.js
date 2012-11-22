@@ -66,7 +66,11 @@
 			var authUrl = 'https://api.singly.com/oauth/authorize?' +
 										'client_id=f011409415c67030f676f11de7783aee&' +
 										'service=' + serviceName + '&' +
-										'redirect_uri=' + encodeURI( options.appUrl + '?service=' + serviceName ) + '&response_type=token';
+										'redirect_uri=' + encodeURIComponent( options.appUrl +
+																								 '?service=' + serviceName +
+																								 '&synclet=' + syncletIndex ) +
+										'&response_type=token';
+
 			window.location.href = authUrl;
 		}
 		else {
@@ -132,17 +136,20 @@
 
 		var accessTokenMatch = window.location.hash.match( /#access_token=([\w\d\._-]+)/ );
 		var serviceMatch = window.location.href.match( /\?service=(\w+)/ );
+		var syncletMatch = window.location.href.match( /&synclet=(\d+)/ );
 
 		getServices( function() {
 
-			if( serviceMatch !== null && accessTokenMatch !== null ) {
+			if( serviceMatch !== null && accessTokenMatch !== null && syncletMatch !== null ) {
 				// service has just been authorized
 				var authedService = serviceMatch[ 1 ];
 				var accessToken = accessTokenMatch[ 1 ];
+				var syncletIndex = syncletMatch[ 1 ];
 
 				var services = storage.getItem( 'services' );
 				var service = services[ authedService ];
 				service.accessToken = accessToken;
+				service.synclets[ syncletIndex ].subscribed = true;
 				storage.setItem( 'services', services );
 
 				view.updateService( authedService, service )
