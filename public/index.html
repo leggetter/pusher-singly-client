@@ -3,51 +3,66 @@
 <html lang="en">
 	<head>
 		<title></title>
+		<link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+
+		<script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+		<style>
+			#services_panel table td {
+				vertical-align: top;
+			}
+
+			#services_panel table td ul {
+				margin-top: 0;
+			}
+
+			li .synclet-name {
+			}
+		</style>
 	</head>
 
 	<body>
-		<h2>Updates</h2>
-		<div id="updates"></div>
 
+		<div class="container-fluid">
+
+			<div class="row-fluid">
+				
+				<div class="span6" id="services_panel">
+
+					<h2>Services</h2>
+
+					<table class="table table-striped">
+				    <thead>
+				      <tr>
+				        <th>Service name</th>
+				        <th>Description</th>
+				        <th>Subscribed</th>
+				        <th>Authenticated</th>
+				        <th>Refresh auth</th>
+				      </tr>
+				    </thead>
+				    <tbody id="service_list">
+				    </tbody>
+				  </table>
+
+				</div>
+
+				<div class="span6" id="updates_panel">
+
+					<h2>Updates</h2>
+					<div id="updates"></div>
+
+				</div>
+
+			</div>
+		</div>
+
+  	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 	  <script src="http://js.pusher.com/1.12/pusher.min.js"></script>
-	  <script src="base64.js"></script>
-	  <script src="pusher-singly.js"></script>
-	  <script>
-	  	Pusher.log = function( msg ) {
-	  		if( console && console.log ) {
-	  			console.log( msg );
-	  		}
-	  	};
-
-	  	function init() {
-		  	var match = document.location.hash.match( /#access_token=([\w\d\.]+)/ );
-		  	var accessToken = null;
-
-		  	if( match === null ) {
-		  		var thisPage = encodeURI( document.location.href );
-		  		document.location.href = 'https://api.singly.com/oauth/authorize?client_id=f011409415c67030f676f11de7783aee&service=twitter&redirect_uri=' + thisPage + '&response_type=token';
-		  		return;
-		  	}
-		  	else {
-		  		accessToken = match[ 1 ];
-		  	}
-
-		  	var pusher = new Pusher( '94a30c48931d62ed5ebf', { encrypted: true } );
-		  	var singly = new PusherSingly( pusher );
-		  	var channel = singly.subscribe( {
-		  		//webhook: 'http://4xjj.localtunnel.com', // TODO: not required when the server knows the streaming webhook endpoint
-		  		path: '/services/twitter/self',
-		  		token: accessToken
-		  	} );
-		  	channel.bind( 'update', function( data ) {
-		  		var el = document.createElement( 'pre' );
-		  		var text = document.createTextNode( JSON.stringify( data, null, 2 ) );
-		  		el.appendChild( text );
-		  		document.getElementById( 'updates' ).appendChild( el );
-		  	});
-	  	}
-
-	  	init();
-	  </script>
+	  <script src="js/pusher-singly/base64.js"></script>
+	  <script src="js/pusher-singly/pusher-singly.js"></script>
+	  <script src="js/storage.js"></script>
+	  <script src="js/view.js"></script>
+	  <script src="js/app.js"></script>
 	</body>
 </html>
