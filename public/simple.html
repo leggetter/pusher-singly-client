@@ -1,0 +1,53 @@
+<!doctype html>
+
+<html lang="en">
+	<head>
+		<title></title>
+	</head>
+
+	<body>
+		<h2>Updates</h2>
+		<div id="updates"></div>
+
+	  <script src="http://js.pusher.com/1.12/pusher.min.js"></script>
+	  <script src="js/pusher-singly/base64.js"></script>
+	  <script src="js/pusher-singly/pusher-singly.js"></script>
+	  <script>
+	  	Pusher.log = function( msg ) {
+	  		if( console && console.log ) {
+	  			console.log( msg );
+	  		}
+	  	};
+
+	  	function init() {
+		  	var match = document.location.hash.match( /#access_token=([\w\d\.]+)/ );
+		  	var accessToken = null;
+
+		  	if( match === null ) {
+		  		var thisPage = encodeURI( document.location.href );
+		  		document.location.href = 'https://api.singly.com/oauth/authorize?client_id=f011409415c67030f676f11de7783aee&service=twitter&redirect_uri=' + thisPage + '&response_type=token';
+		  		return;
+		  	}
+		  	else {
+		  		accessToken = match[ 1 ];
+		  	}
+
+		  	var pusher = new Pusher( '94a30c48931d62ed5ebf', { encrypted: true } );
+		  	var singly = new PusherSingly( pusher );
+		  	var channel = singly.subscribe( {
+		  		//webhook: 'http://4xjj.localtunnel.com', // TODO: not required when the server knows the streaming webhook endpoint
+		  		path: '/services/twitter/self',
+		  		token: accessToken
+		  	} );
+		  	channel.bind( 'singly:data_received', function( data ) {
+		  		var el = document.createElement( 'pre' );
+		  		var text = document.createTextNode( JSON.stringify( data, null, 2 ) );
+		  		el.appendChild( text );
+		  		document.getElementById( 'updates' ).appendChild( el );
+		  	});
+	  	}
+
+	  	init();
+	  </script>
+	</body>
+</html>
