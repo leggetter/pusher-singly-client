@@ -5,20 +5,23 @@
 		storage = {
 			getItem: function( name ) {
 				var value = localStorage.getItem( name );
+				var obj;
 				if( value ) {
 					try {
 						value = JSON.parse( value );
 					}
-					catch( e ) {}
+					catch( e ) { }
 				}
 				return value;
 			},
 			setItem: function( name, value ) {
-				try {
-					value = JSON.stringify( value );
+				if( value ) {
+					try {
+						value = JSON.stringify( value );
+					}
+					catch( e ) { }
 				}
-				catch( e ) {}
-				localStorage.setItem( name, value);
+				localStorage.setItem( name, value );
 			}
 		}; 
 	}

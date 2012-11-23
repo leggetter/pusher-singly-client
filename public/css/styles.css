@@ -1,0 +1,44 @@
+.service-img {
+	height: 32px;
+	width: 32px;
+}
+
+.service-name {
+	line-height: 32px;
+}
+
+.synclet-list {
+	max-width: 200px;
+}
+
+.synclet-list ul {
+	list-style: none;
+	margin-right: 20px;
+	text-align: right;
+}
+
+.synclet-list li .synclet-name,
+.synclet-list li input[type=checkbox] {
+	line-height: 25px;
+	vertical-align: middle
+}
+
+.synclet-list li .synclet-name {
+	margin-right: 10px;
+}
+
+.service-row .access-token .icon-ok {
+	display: none;
+}
+
+.service-row .access-token .icon-off {
+	display: inline-block;
+}
+
+.service-row.success .access-token .icon-ok {
+	display: inline-block;
+}
+
+.service-row.success .access-token .icon-off {
+	display: none;
+}

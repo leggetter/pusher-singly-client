@@ -2,7 +2,7 @@
 
 	function displayServices( services ) {
 		for( var serviceName in services ) {
-	    appendService( serviceName, services[ serviceName ] )
+	    appendService( serviceName, services[ serviceName ] );
 	  }
 
 	  $( options.services + ' input[type="checkbox"]' ).click( handleSubscriptionToggle );
@@ -18,18 +18,24 @@
 
 	function appendService( serviceName, service ) {
 	  var html = '' +
-	    '<tr id="service_row_' + serviceName + '"' + ( service.accessToken? ' class="success"' : '' ) + '>' +
-	      '<td>' + serviceName + '</td>' +
+	    '<tr id="service_row_' + serviceName + '" class="service-row' + ( service.accessToken? ' success' : '' ) + '">' +
+	    	'<td class="service-img"><img src="http://assets.singly.com/service-icons/32px/' + serviceName + '.png" height="32" width="32" /></td>' +
+	      '<td class="service-name">' +serviceName + '</td>' +
 	      '<td>' + service.desc + '</td>' +
-	      '<td>' + listSynclets( serviceName, service )  + '</td>' +
-	      '<td class="access-token">' + ( service.accessToken? 'Y' : 'N' ) + '</td>';
+	      '<td class="synclet-list">' + listSynclets( serviceName, service )  + '</td>' +
+	      '<td class="access-token">' +
+	      	'<span class="icon-ok" title="Authorized"></span>' +
+	      	'<span class="icon-off" title="Not authorized"></span>';
 
 	      var authUrl = 'https://api.singly.com/oauth/authorize?' +
 										'client_id=f011409415c67030f676f11de7783aee&' +
 										'service=' + serviceName + '&' +
-										'redirect_uri=' + encodeURI( options.appUrl + '?service=' + serviceName ) + '&response_type=token';
-				html +=
-	      '<td class="re-auth"><a href="' + authUrl + '">Re-authorize</a></td>' +  
+										'redirect_uri=' + encodeURIComponent( options.appUrl + '?service=' + serviceName ) +
+										'&response_type=token';
+
+				html += '<a class="icon-repeat" href="' + authUrl + '" title="Re-authorize"></a>' + 
+	      '</td>';
+
 	    '</tr>';
 	  var tr = $( html );
 	  $( options.services ).append( tr );
@@ -52,18 +58,6 @@
 		return html;
 	}
 
-	function updateService( serviceName, service ) {
-		var row = $( options.services + ' #service_row_' + serviceName );
-		if( service.accessToken ) {
-			row.addClass( 'success' );
-			row.find( 'td.access-token' ).text( 'Y' );
-		}
-		else {
-			row.removeClass( 'success' );
-			row.find( 'td.access-token' ).text( 'N' );
-		}
-	}
-
 	function logUpdate( data, className ) {
 		var el = $( '<pre>' );
 		el.addClass( className );
@@ -77,7 +71,6 @@
 		displayServices: displayServices,
 		alert: window.alert,
 		logUpdate: logUpdate,
-		updateService: updateService,
 		onSubscriptionToggle: null
 	};
 

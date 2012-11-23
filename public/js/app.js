@@ -14,25 +14,19 @@
 	function getServices( callback ) {
 		var services = storage.getItem( 'services' );
 
-		if( services === null ) {
+		if( !services ) {
 	  	$.ajax( {
 	    	url: 'https://api.singly.com/v0/services',
-	    	success: function() {
-	    		servicesRetrieved.apply( this, arguments );
+	    	dataType: 'json',
+	    	success: function( data ) {
+	    		storage.setItem( 'services', data );
 	    		callback();
 	    	}
 	  	} );
 		}
 		else {
-			view.displayServices( services );
 			callback();
 		}
-	}
-
-	function servicesRetrieved( data ) {
-		storage.setItem( 'services', data );
-
-		view.displayServices( data );
 	}
 
 	// view
@@ -58,7 +52,6 @@
 
 		if( synclet.subscribed ) {
 			// unsubscribe
-
 			unsubscribeFromSynclet( serviceName, service, synclet );
 		}
 		else if( service.accessToken === undefined ) {
@@ -140,20 +133,25 @@
 
 		getServices( function() {
 
-			if( serviceMatch !== null && accessTokenMatch !== null && syncletMatch !== null ) {
+			var services = storage.getItem( 'services' );
+
+			if( serviceMatch && accessTokenMatch ) {
 				// service has just been authorized
 				var authedService = serviceMatch[ 1 ];
 				var accessToken = accessTokenMatch[ 1 ];
-				var syncletIndex = syncletMatch[ 1 ];
 
-				var services = storage.getItem( 'services' );
 				var service = services[ authedService ];
 				service.accessToken = accessToken;
-				service.synclets[ syncletIndex ].subscribed = true;
-				storage.setItem( 'services', services );
 
-				view.updateService( authedService, service )
+				if( syncletMatch ) {
+					var syncletIndex = syncletMatch[ 1 ];
+					service.synclets[ syncletIndex ].subscribed = true;
+				}
+
+				storage.setItem( 'services', services );
 			}
+
+			view.displayServices( services );
 
 			subscribeToPending();
 
@@ -169,6 +167,9 @@
 		window.view,
 		window.storage,
 		{
-			appUrl: document.location.origin
+			appUrl: document.location.protocol + '//' +
+							document.location.hostname + ':' +
+							document.location.port +
+							document.location.pathname
 		}
 	);
